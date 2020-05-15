@@ -1,0 +1,23 @@
+language: scala
+
+scala:
+  - 2.13.1
+
+services: docker
+
+jdk:
+  - openjdk11
+
+before_cache:
+  - rm -fv $HOME/.ivy2/.sbt.ivy.lock
+  - find $HOME/.ivy2/cache -name "ivydata-*.properties" -print -delete
+  - find $HOME/.sbt        -name "*.lock"               -print -delete
+
+cache:
+  directories:
+    - $HOME/.cache/coursier
+    - $HOME/.ivy2/cache
+    - $HOME/.sbt
+
+script:
+  - sbt -Dsbt.color=true compile test
