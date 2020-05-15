@@ -1,23 +1,21 @@
 # fenixedu-scala-sdk [![license](http://img.shields.io/:license-MIT-blue.svg)](LICENSE)
-[![Scaladoc](http://javadoc-badge.appspot.com/pt.tecnico.dsi/scala-keystoneclient_2.12.svg?label=scaladoc&style=plastic&maxAge=604800)](https://ist-dsi.github.io/scala-keystoneclient/latest/api/pt/tecnico/dsi/scala-keystoneclient/index.html)
-[![Latest version](https://index.scala-lang.org/ist-dsi/scala-keystoneclient/scala-keystoneclient/latest.svg)](https://index.scala-lang.org/ist-dsi/scala-keystoneclient/scala-keystoneclient)
+[![Scaladoc](http://javadoc-badge.appspot.com/org.fenixedu.sdk/fenixedu-scala-sdk_2.13.svg?label=scaladoc&style=plastic&maxAge=604800)](https://fenixedu.github.io/fenixedu-scala-sdk/latest/api/org/fenixedu/sdk/index.html)
+[![Latest version](https://index.scala-lang.org/FenixEdu/fenixedu-scala-sdk/latest.svg)](https://index.scala-lang.org/FenixEdu/fenixedu-scala-sdk/)
 
-[![Build Status](https://travis-ci.org/ist-dsi/scala-keystoneclient.svg?branch=master&style=plastic&maxAge=604800)](https://travis-ci.org/ist-dsi/scala-keystoneclient)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/)](https://www.codacy.com/app/IST-DSI/scala-keystoneclient?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ist-dsi/scala-vault&amp;utm_campaign=Badge_Grade)
-[![BCH compliance](https://bettercodehub.com/edge/badge/ist-dsi/scala-keystoneclient)](https://bettercodehub.com/results/ist-dsi/scala-keystoneclient)
+[![Build Status](https://travis-ci.org/FenixEdu/fenixedu-scala-sdk.svg?branch=master&style=plastic&maxAge=604800)](https://travis-ci.org/FenixEdu/fenixedu-scala-sdk)
 
-Scala client for the FenixEdu API.
+A pure functional Scala client for the FenixEdu API implemented using Http4s client.
 
-Currently only the public endpoints are supported:
+Only the public endpoints are supported.
 
-[Latest scaladoc documentation](https://fenixedu.github.io/fenixedu-scala-sdk/latest/api/pt/tecnico/dsi/scala-keystoneclient/index.html)
+[Latest scaladoc documentation](https://fenixedu.github.io/fenixedu-scala-sdk/latest/api/org/fenixedu/sdk/index.html)
 
 ## Install
 Add the following dependency to your `build.sbt`:
 ```sbt
-libraryDependencies += "pt.tecnico.dsi" %% "fenixedu-scala-sdk" % "0.0.0"
+libraryDependencies += "org.fenixedu.sdk" %% "fenixedu-scala-sdk" % "0.1.0"
 ```
 We use [semantic versioning](http://semver.org).
 
 ## License
-scala-vault is open source and available under the [MIT license](LICENSE).
+This library is open source and available under the [MIT license](LICENSE).
