@@ -13,7 +13,7 @@ final class Course[F[_]: Sync](val id: String, baseUri: Uri)(implicit client: Cl
     * The same course may be lectured simultaneously in multiple degrees during the same academic term.
     * The “competences” field holds curricular information for each set of degrees in which the course is lectured.
     * Usually this information is the same for all the associated degrees. */
-  def apply(): F[CouseModel] = client.expect(uri)
+  def get(): F[CouseModel] = client.expect(uri)
 
   /** An evaluation is a component of a course in which the teacher determines the extent of the students understanding of the program.
     * Current known implementations of evaluations are: tests, exams, projects, online tests and ad-hoc evaluations. */
@@ -26,7 +26,7 @@ final class Course[F[_]: Sync](val id: String, baseUri: Uri)(implicit client: Cl
   /** Each course is lectured during a specific set of intervals. These intervals make up the lesson period for that course.
     * Each course also has a curricular load that specifies the time each student will expend with the course. Each shift is the possible
     * schedule in which a student should enrol. */
-  val schedule: F[List[Schedule]] = client.expect(uri / "schedule")
+  val schedule: F[Schedule] = client.expect(uri / "schedule")
 
   /** This endpoint lists all the students attending the specified course. For each student it indicates the corresponding degree.
     * The endpoint also returns the number of students officially enrolled in the course. */

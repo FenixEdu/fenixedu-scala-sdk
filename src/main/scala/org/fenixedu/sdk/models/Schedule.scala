@@ -8,6 +8,11 @@ object Schedule {
 }
 case class Schedule(lessonPeriods: List[Period], courseLoads: List[CourseLoad], shifts: List[Shift])
 
+object CourseLoad {
+  implicit val decoder: Decoder[CourseLoad] = deriveDecoder(identity)
+}
+case class CourseLoad(`type`: String, totalQuantity: Float, unitQuantity: Float)
+
 object Shift {
   implicit val decoder: Decoder[Shift] = deriveDecoder(identity)
 }
@@ -21,7 +26,7 @@ case class Occupation(current: Int, max: Int)
 object Lesson {
   implicit val decoder: Decoder[Lesson] = deriveDecoder(identity)
 }
-case class Lesson(start: String, end: String, room: SpaceRef)
+case class Lesson(start: String, end: String, room: Option[SpaceRef])
 
 
 

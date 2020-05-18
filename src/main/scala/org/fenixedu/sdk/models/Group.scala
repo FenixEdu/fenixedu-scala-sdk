@@ -11,9 +11,9 @@ case class Group(
   description: String,
   enrolmentPeriod: Period,
   enrolmentPolicy: String,
-  minimumCapacity: Int,
-  maximumCapacity: Int,
-  idealCapacity: Int,
+  minimumCapacity: Option[Int],
+  maximumCapacity: Option[Int],
+  idealCapacity: Option[Int],
   associatedCourses: List[AssociatedCourse],
   associatedGroups: List[AssociatedGroup]
 )
@@ -26,7 +26,7 @@ case class AssociatedCourse(id: String, name: String, degrees: Seq[DegreeRef])
 object AssociatedGroup{
   implicit val decoder: Decoder[AssociatedGroup] = deriveDecoder (identity)
 }
-case class AssociatedGroup(groupNumber: Int, shift: String, members: Seq[Member])
+case class AssociatedGroup(groupNumber: Int, shift: Option[String], members: Seq[Member])
 
 object Member {
   implicit val decoder: Decoder[Member] = deriveDecoder(identity)

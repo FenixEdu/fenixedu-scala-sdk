@@ -1,12 +1,20 @@
 package org.fenixedu.sdk.models
 
+import cats.effect.Sync
 import io.circe.derivation.deriveDecoder
-import io.circe.{Decoder, DecodingFailure, HCursor}
+import io.circe.{Decoder, DecodingFailure, HCursor, Json}
+import org.fenixedu.sdk.FenixEduClient
 
 object SpaceRef {
   implicit val decoder: Decoder[SpaceRef] = deriveDecoder(identity)
+  implicit val decoderOpt: Decoder[Option[SpaceRef]] = Decoder.decodeOption(decoder).prepare(_.withFocus(_.withObject{ obj =>
+    if (obj("id").exists(_.isNull)) Json.Null
+    else Json.fromJsonObject(obj)
+  }))
 }
-case class SpaceRef(`type`: String, id: String, name: String)
+case class SpaceRef(`type`: String, id: String, name: String) {
+  def space[F[_]: Sync](implicit client: FenixEduClient[F]): F[Space] = client.spaces.get(id)
+}
 
 object Capacity {
   implicit val decoder: Decoder[Capacity] = deriveDecoder(identity)

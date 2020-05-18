@@ -33,5 +33,3 @@ object Trip {
   implicit val decoder: Decoder[Trip] = deriveDecoder(identity)
 }
 case class Trip(`type`: String, stations: List[Trip.Stop])
-
-

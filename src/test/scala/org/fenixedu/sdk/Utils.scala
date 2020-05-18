@@ -15,7 +15,12 @@ import org.scalatest.exceptions.TestFailedException
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AsyncWordSpec
 
-abstract class Utils extends AsyncWordSpec with Matchers with BeforeAndAfterAll {
+trait LowPriority {
+  import scala.language.implicitConversions
+  implicit def io2Future[T](io: IO[T]): Future[T] = io.unsafeToFuture()
+}
+
+abstract class Utils extends AsyncWordSpec with Matchers with BeforeAndAfterAll with LowPriority {
   val logger: Logger = getLogger
 
   implicit override def executionContext = ExecutionContext.global
@@ -70,9 +75,6 @@ abstract class Utils extends AsyncWordSpec with Matchers with BeforeAndAfterAll 
 
     def valueShouldIdempotentlyBe(value: T): IO[Assertion] = idempotently(_ shouldBe value)
   }
-
-  import scala.language.implicitConversions
-  implicit def io2Future[T](io: IO[T]): Future[T] = io.unsafeToFuture()
 
   private def ordinalSuffix(number: Int): String = {
     number % 100 match {
