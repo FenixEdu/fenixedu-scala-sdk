@@ -113,7 +113,7 @@ envVars in ghpagesPushSite := Map("SBT_GHPAGES_COMMIT_MESSAGE" -> s"Add Scaladoc
 // ======================================================================================================================
 // ==== Publishing/Release ==============================================================================================
 // ======================================================================================================================
-publishTo := Some("FenixEdu Artifactory" at "https://repo.fenixedu.org/fenixedu-maven-repository/")
+publishTo := Some("FenixEdu Artifactory" at "https://repo.fenixedu.org/fenixedu-releases/")
 licenses += "MIT" -> url("http://opensource.org/licenses/MIT")
 homepage := Some(url(s"https://github.com/FenixEdu/${name.value}"))
 scmInfo := Some(ScmInfo(homepage.value.get, git.remoteRepo.value))
