@@ -44,13 +44,11 @@ libraryDependencies ++= Seq("blaze-client", "dsl", "circe").map { module =>
 } ++ Seq(
   "io.circe"        %% "circe-derivation"  % "0.13.0-M4",
   "io.circe"        %% "circe-parser"      % "0.13.0",
-  "com.beachape"    %% "enumeratum-circe"  % "1.6.0",
+  "com.beachape"    %% "enumeratum-circe"  % "1.6.1",
   "ch.qos.logback"  %  "logback-classic"   % "1.2.3" % Test,
-  "org.scalatest"   %% "scalatest"         % "3.1.1" % Test,
+  "org.scalatest"   %% "scalatest"         % "3.1.2" % Test,
 )
 addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.3.1")
-
-//coverageEnabled := true
 
 // ======================================================================================================================
 // ==== Testing =========================================================================================================
@@ -115,9 +113,7 @@ envVars in ghpagesPushSite := Map("SBT_GHPAGES_COMMIT_MESSAGE" -> s"Add Scaladoc
 // ======================================================================================================================
 // ==== Publishing/Release ==============================================================================================
 // ======================================================================================================================
-publishTo := sonatypePublishTo.value
-sonatypeProfileName := organization.value
-
+publishTo := Some("FenixEdu Artifactory" at "https://repo.fenixedu.org/fenixedu-maven-repository/")
 licenses += "MIT" -> url("http://opensource.org/licenses/MIT")
 homepage := Some(url(s"https://github.com/FenixEdu/${name.value}"))
 scmInfo := Some(ScmInfo(homepage.value.get, git.remoteRepo.value))
@@ -126,12 +122,11 @@ developers ++= List(
 )
 
 // Fail the build/release if updates there are updates for the dependencies
-//dependencyUpdatesFailBuild := true
+dependencyUpdatesFailBuild := true
 
 releaseUseGlobalVersion := false
 releaseNextCommitMessage := s"Setting version to ${ReleasePlugin.runtimeVersion.value} [skip ci]"
 
-releasePublishArtifactsAction := PgpKeys.publishSigned.value // Maven Central requires packages to be signed
 import ReleaseTransformations._
 releaseProcess := Seq[ReleaseStep](
   releaseStepTask(dependencyUpdates),
@@ -144,7 +139,6 @@ releaseProcess := Seq[ReleaseStep](
   tagRelease,
   releaseStepTask(ghpagesPushSite),
   publishArtifacts,
-  releaseStepCommand("sonatypeRelease"),
   pushChanges,
   setNextVersion
 )
