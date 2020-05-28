@@ -1,4 +1,4 @@
-organization := "org.fenixedu.sdk"
+organization := "org.fenixedu"
 name := "fenixedu-scala-sdk"
 
 // ======================================================================================================================
@@ -113,7 +113,7 @@ envVars in ghpagesPushSite := Map("SBT_GHPAGES_COMMIT_MESSAGE" -> s"Add Scaladoc
 // ======================================================================================================================
 // ==== Publishing/Release ==============================================================================================
 // ======================================================================================================================
-publishTo := Some("Artifactory Realm" at "https://repo.fenixedu.org/fenixedu-releases")
+publishTo := sonatypePublishTo.value
 licenses += "MIT" -> url("http://opensource.org/licenses/MIT")
 homepage := Some(url(s"https://github.com/FenixEdu/${name.value}"))
 scmInfo := Some(ScmInfo(homepage.value.get, git.remoteRepo.value))
@@ -121,12 +121,15 @@ developers ++= List(
   Developer("Lasering", "Simão Martins", "", url("https://github.com/Lasering")),
 )
 
-// Fail the build/release if updates there are updates for the dependencies
+// Fail the build/release if there are updates for the dependencies
 dependencyUpdatesFailBuild := true
 
+// By default the version is set on the build level (using version in ThisBuild).
+// When this is set to false, version like version := "1.2.3" will be written to version.sbt.
 releaseUseGlobalVersion := false
 releaseNextCommitMessage := s"Setting version to ${ReleasePlugin.runtimeVersion.value} [skip ci]"
 
+releasePublishArtifactsAction := PgpKeys.publishSigned.value // Maven Central requires packages to be signed
 import ReleaseTransformations._
 releaseProcess := Seq[ReleaseStep](
   releaseStepTask(dependencyUpdates),
@@ -139,6 +142,7 @@ releaseProcess := Seq[ReleaseStep](
   tagRelease,
   releaseStepTask(ghpagesPushSite),
   publishArtifacts,
+  releaseStepCommand("sonatypeRelease"),
   pushChanges,
   setNextVersion
 )
