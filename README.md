@@ -13,7 +13,7 @@ Only the public endpoints are supported.
 ## Install
 Add the following dependency to your `build.sbt`:
 ```sbt
-libraryDependencies += "org.fenixedu.sdk" %% "fenixedu-scala-sdk" % "0.1.0"
+libraryDependencies += "org.fenixedu" %% "fenixedu-scala-sdk" % "0.1.0"
 ```
 We use [semantic versioning](http://semver.org).
 
