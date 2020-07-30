@@ -1,6 +1,5 @@
 package org.fenixedu.sdk.models
 
-import cats.effect.Sync
 import io.circe.derivation.deriveDecoder
 import io.circe.{Decoder, DecodingFailure, HCursor, Json}
 import org.fenixedu.sdk.FenixEduClient
@@ -13,7 +12,7 @@ object SpaceRef {
   }))
 }
 case class SpaceRef(`type`: String, id: String, name: String) {
-  def space[F[_]: Sync](implicit client: FenixEduClient[F]): F[Space] = client.spaces.get(id)
+  def space[F[_]](implicit client: FenixEduClient[F]): F[Space] = client.spaces.get(id)
 }
 
 object Capacity {

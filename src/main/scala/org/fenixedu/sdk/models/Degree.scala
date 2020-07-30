@@ -1,6 +1,5 @@
 package org.fenixedu.sdk.models
 
-import cats.effect.Sync
 import io.circe.Decoder
 import io.circe.derivation.deriveDecoder
 import org.fenixedu.sdk.FenixEduClient
@@ -43,5 +42,5 @@ object DegreeRef {
   implicit val decoder: Decoder[DegreeRef] = deriveDecoder(identity)
 }
 case class DegreeRef(id: String, name: String, acronym: String) {
-  def degree[F[_]: Sync](implicit client: FenixEduClient[F]): F[Degree] = client.degrees.get(id)
+  def degree[F[_]](implicit client: FenixEduClient[F]): F[Degree] = client.degrees.get(id)
 }

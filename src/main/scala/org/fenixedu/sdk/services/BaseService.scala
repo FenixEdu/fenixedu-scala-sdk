@@ -5,14 +5,14 @@ import cats.syntax.flatMap._
 import cats.syntax.functor._
 import fs2.{Chunk, Stream}
 import io.circe.{Decoder, HCursor}
+import org.http4s.Method.GET
 import org.http4s.circe.decodeUri
 import org.http4s.client.Client
 import org.http4s.client.dsl.Http4sClientDsl
-import org.http4s.dsl.impl.Methods
 import org.http4s.{Query, Request, Uri}
 
 abstract class BaseService[F[_], T: Decoder](baseUri: Uri, val name: String)(implicit client: Client[F], F: Sync[F]) {
-  protected val dsl = new Http4sClientDsl[F] with Methods
+  protected val dsl = new Http4sClientDsl[F] {}
   import dsl._
 
   val pluralName = s"${name}s"

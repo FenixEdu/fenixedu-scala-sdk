@@ -5,7 +5,7 @@ name := "fenixedu-scala-sdk"
 // ==== Compile Options =================================================================================================
 // ======================================================================================================================
 javacOptions ++= Seq("-Xlint", "-encoding", "UTF-8", "-Dfile.encoding=utf-8")
-scalaVersion := "2.13.2"
+scalaVersion := "2.13.3"
 
 scalacOptions ++= Seq(
   "-encoding", "utf-8",            // Specify character encoding used by source files.
@@ -36,17 +36,31 @@ scalacOptions in (Compile, console) ~= (_.filterNot { option =>
 })
 scalacOptions in (Test, console) := (scalacOptions in (Compile, console)).value
 
+initialCommands in console :=
+  """import scala.concurrent.ExecutionContext
+    |import java.util.concurrent.Executors
+    |import cats.effect.{Blocker, ContextShift, IO}
+    |import org.http4s.client.{Client, JavaNetClientBuilder}
+    |import org.http4s.syntax.all._
+    |import org.fenixedu.sdk.FenixEduClient
+    |import org.fenixedu.sdk.services._
+    |
+    |val ec = ExecutionContext.fromExecutorService(Executors.newFixedThreadPool(5))
+    |implicit val cs: ContextShift[IO] = IO.contextShift(ec)
+    |implicit val httpClient: Client[IO] = JavaNetClientBuilder[IO](Blocker.liftExecutionContext(ec)).create
+    |val client: FenixEduClient[IO] = new FenixEduClient[IO](uri"https://fenix.tecnico.ulisboa.pt/api/fenix/")""".stripMargin
+
 // ======================================================================================================================
 // ==== Dependencies ====================================================================================================
 // ======================================================================================================================
-libraryDependencies ++= Seq("blaze-client", "dsl", "circe").map { module =>
-  "org.http4s"      %% s"http4s-$module" % "0.21.4"
+libraryDependencies ++= Seq("blaze-client", "circe").map { module =>
+  "org.http4s"      %% s"http4s-$module" % "1.0.0-M3"
 } ++ Seq(
   "io.circe"        %% "circe-derivation"  % "0.13.0-M4",
   "io.circe"        %% "circe-parser"      % "0.13.0",
   "com.beachape"    %% "enumeratum-circe"  % "1.6.1",
   "ch.qos.logback"  %  "logback-classic"   % "1.2.3" % Test,
-  "org.scalatest"   %% "scalatest"         % "3.1.2" % Test,
+  "org.scalatest"   %% "scalatest"         % "3.2.0" % Test,
 )
 addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.3.1")
 

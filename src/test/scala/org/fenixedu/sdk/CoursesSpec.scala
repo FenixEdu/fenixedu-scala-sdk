@@ -2,7 +2,6 @@ package org.fenixedu.sdk
 
 import cats.instances.list._
 import cats.syntax.parallel._
-import cats.syntax.applicativeError._
 import org.http4s.Status.InternalServerError
 import org.http4s.client.UnexpectedStatus
 
