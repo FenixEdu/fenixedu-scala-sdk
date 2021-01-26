@@ -1,5 +1,6 @@
 package org.fenixedu.sdk
 
+import cats.effect.unsafe.implicits.global // I'm sure there is a better way to do this. Please do not copy paste
 import cats.instances.list._
 import cats.syntax.parallel._
 import org.http4s.Status.InternalServerError
@@ -26,7 +27,7 @@ class CoursesSpec extends Utils {
             }
             s"get the course schedule ${courseRef.acronym} (${courseRef.id})" in {
               courseService.schedule.value(_.lessonPeriods.length should be >= 0).recover {
-                case UnexpectedStatus(_: InternalServerError.type) =>
+                case UnexpectedStatus(_: InternalServerError.type, _, _) =>
                   // There is an error on the server, since we cannot easily exclude the Courses with the error we simply ignore it
                   assert(true)
               }

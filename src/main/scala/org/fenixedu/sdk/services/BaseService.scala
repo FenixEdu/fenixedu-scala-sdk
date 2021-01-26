@@ -1,7 +1,6 @@
 package org.fenixedu.sdk.services
 
-import cats.effect.Sync
-import cats.syntax.flatMap._
+import cats.effect.Concurrent
 import cats.syntax.functor._
 import fs2.{Chunk, Stream}
 import io.circe.{Decoder, HCursor}
@@ -11,7 +10,7 @@ import org.http4s.client.Client
 import org.http4s.client.dsl.Http4sClientDsl
 import org.http4s.{Query, Request, Uri}
 
-abstract class BaseService[F[_], T: Decoder](baseUri: Uri, val name: String)(implicit client: Client[F], F: Sync[F]) {
+abstract class BaseService[F[_], T: Decoder](baseUri: Uri, val name: String)(implicit client: Client[F], F: Concurrent[F]) {
   protected val dsl = new Http4sClientDsl[F] {}
   import dsl._
 
@@ -19,7 +18,7 @@ abstract class BaseService[F[_], T: Decoder](baseUri: Uri, val name: String)(imp
   val uri: Uri = baseUri / pluralName
 
   /** Takes a request and unwraps its return value. */
-  protected def unwrap(request: F[Request[F]]): F[T] = client.expect[Map[String, T]](request).map(_.apply(name))
+  protected def unwrap(request: Request[F]): F[T] = client.expect[Map[String, T]](request).map(_.apply(name))
   /** Puts a value inside a wrapper. */
   protected def wrap(value: T): Map[String, T] = Map(name -> value)
 
@@ -32,8 +31,7 @@ abstract class BaseService[F[_], T: Decoder](baseUri: Uri, val name: String)(imp
     Stream.unfoldChunkEval[F, Option[Uri], R](Some(uri)) {
       case Some(uri) =>
         for {
-          request <- GET(uri.copy(query = uri.query ++ query.pairs))
-          (next, entries) <- client.expect[(Option[Uri], List[R])](request)
+          (next, entries) <- client.expect[(Option[Uri], List[R])](GET(uri.copy(query = uri.query ++ query.pairs)))
         } yield Some((Chunk.iterable(entries), next))
       case None => F.pure(None)
     }

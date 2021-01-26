@@ -1,9 +1,9 @@
 package org.fenixedu.sdk
 
-import scala.concurrent.ExecutionContext.Implicits.global
+import cats.effect.unsafe.implicits.global // I'm sure there is a better way to do this. Please do not copy paste
 import scala.concurrent.duration.DurationInt
-import scala.concurrent.{ExecutionContext, Future}
-import cats.effect.{ContextShift, IO, Timer}
+import scala.concurrent.Future
+import cats.effect.IO
 import cats.instances.list._
 import cats.syntax.traverse._
 import org.http4s.Uri
@@ -23,12 +23,7 @@ trait LowPriority {
 abstract class Utils extends AsyncWordSpec with Matchers with BeforeAndAfterAll with LowPriority {
   val logger: Logger = getLogger
 
-  implicit override def executionContext = ExecutionContext.global
-
-  implicit val timer: Timer[IO] = IO.timer(executionContext)
-  implicit val cs: ContextShift[IO] = IO.contextShift(executionContext)
-
-  val (_httpClient, finalizer) = BlazeClientBuilder[IO](global)
+  val (_httpClient, finalizer) = BlazeClientBuilder[IO](global.compute)
     .withResponseHeaderTimeout(20.seconds)
     .withCheckEndpointAuthentication(false)
     .resource.allocated.unsafeRunSync()
