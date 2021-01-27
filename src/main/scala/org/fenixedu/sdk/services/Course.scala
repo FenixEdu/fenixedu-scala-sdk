@@ -13,7 +13,7 @@ final class Course[F[_]: Concurrent](val id: String, baseUri: Uri)(implicit clie
     * The same course may be lectured simultaneously in multiple degrees during the same academic term.
     * The “competences” field holds curricular information for each set of degrees in which the course is lectured.
     * Usually this information is the same for all the associated degrees. */
-  def get(): F[CouseModel] = client.expect(uri)
+  val model: F[CouseModel] = client.expect(uri)
 
   /** An evaluation is a component of a course in which the teacher determines the extent of the students understanding of the program.
     * Current known implementations of evaluations are: tests, exams, projects, online tests and ad-hoc evaluations. */

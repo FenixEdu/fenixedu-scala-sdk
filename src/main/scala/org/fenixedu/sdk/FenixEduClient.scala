@@ -4,9 +4,10 @@ import cats.effect.Concurrent
 import org.fenixedu.sdk.models.{Course => _, _}
 import org.fenixedu.sdk.services._
 import org.http4s.Uri
+import org.http4s.syntax.literals._
 import org.http4s.client.Client
 
-class FenixEduClient[F[_]](val baseUri: Uri)(implicit client: Client[F], F: Concurrent[F]) {
+class FenixEduClient[F[_]](val baseUri: Uri = uri"https://fenix.tecnico.ulisboa.pt/api/fenix")(implicit client: Client[F], F: Concurrent[F]) {
 	val uri: Uri = baseUri / "v1"
 
 	/** @return returns some basic information about the institution where the application is deployed.

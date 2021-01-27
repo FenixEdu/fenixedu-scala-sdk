@@ -40,5 +40,5 @@ object CourseRef {
   implicit val decoder: Decoder[CourseRef] = deriveDecoder(identity)
 }
 case class CourseRef(id: String, acronym: String, name: String, academicTerm: String, url: Option[Uri]) {
-  def course[F[_]](implicit client: FenixEduClient[F]): F[Course] = client.course(id).get()
+  def course[F[_]](implicit client: FenixEduClient[F]): F[Course] = client.course(id).model
 }

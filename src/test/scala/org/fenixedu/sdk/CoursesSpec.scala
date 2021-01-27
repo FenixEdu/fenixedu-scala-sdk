@@ -17,7 +17,7 @@ class CoursesSpec extends Utils {
           courses.foreach { courseRef =>
             val courseService = client.course(courseRef.id)
             s"get the course ${courseRef.acronym} (${courseRef.id})" in {
-              courseService.get().value(_.academicTerm should include (academicTerm))
+              courseService.model.value(_.academicTerm should include (academicTerm))
             }
             s"get the course ${courseRef.acronym} (${courseRef.id}) evaluations" in {
               courseService.evaluations.value(_.length should be >= 0)
