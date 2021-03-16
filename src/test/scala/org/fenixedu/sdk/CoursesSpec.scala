@@ -10,7 +10,8 @@ class CoursesSpec extends Utils {
   def forAcademicTerm(year: Int) = {
     val academicTerm = s"$year/${year + 1}"
     client.degrees.list(academicTerm = Some(academicTerm))
-      .flatMap(_.parTraverse(degree => client.degrees.courses(degree.id, Some(academicTerm)).map(courses => (degree, courses.take(3)))))
+      // This degree is causing a lot of duplicate test name exception
+      .flatMap(_.filter(_.acronym != "DETPT").parTraverse(degree => client.degrees.courses(degree.id, Some(academicTerm)).map(courses => (degree, courses.take(3)))))
       .unsafeRunSync()
       .foreach {  case (degree, courses) =>
         s"the degree is ${degree.acronym} (${degree.id}) on academic term $academicTerm" should {

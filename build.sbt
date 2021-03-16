@@ -5,7 +5,7 @@ name := "fenixedu-scala-sdk"
 // ==== Compile Options =================================================================================================
 // ======================================================================================================================
 javacOptions ++= Seq("-Xlint", "-encoding", "UTF-8", "-Dfile.encoding=utf-8")
-scalaVersion := "2.13.4"
+scalaVersion := "2.13.5"
 
 scalacOptions ++= Seq(
   "-encoding", "utf-8",            // Specify character encoding used by source files.
@@ -31,10 +31,10 @@ scalacOptions ++= Seq(
 
 // These lines ensure that in sbt console or sbt test:console the -Ywarn* and the -Xfatal-warning are not bothersome.
 // https://stackoverflow.com/questions/26940253/in-sbt-how-do-you-override-scalacoptions-for-console-in-all-configurations
-scalacOptions in (Compile, console) ~= (_.filterNot { option =>
+Compile / console / scalacOptions ~= (_.filterNot { option =>
   option.startsWith("-W") || option.startsWith("-Xlint")
 })
-scalacOptions in (Test, console) := (scalacOptions in (Compile, console)).value
+Test / console / scalacOptions := (Test / console / scalacOptions).value
 
 initialCommands in console :=
   """import scala.concurrent.ExecutionContext
@@ -54,13 +54,13 @@ initialCommands in console :=
 // ==== Dependencies ====================================================================================================
 // ======================================================================================================================
 libraryDependencies ++= Seq("blaze-client", "circe").map { module =>
-  "org.http4s"      %% s"http4s-$module" % "1.0.0-M13"
+  "org.http4s"      %% s"http4s-$module" % "1.0.0-M19"
 } ++ Seq(
   "io.circe"        %% "circe-derivation"  % "0.13.0-M5",
   "io.circe"        %% "circe-parser"      % "0.13.0",
   "com.beachape"    %% "enumeratum-circe"  % "1.6.1",
   "ch.qos.logback"  %  "logback-classic"   % "1.2.3" % Test,
-  "org.scalatest"   %% "scalatest"         % "3.2.3" % Test,
+  "org.scalatest"   %% "scalatest"         % "3.2.6" % Test,
 )
 addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.3.1")
 
@@ -83,7 +83,7 @@ Test / testGrouping := {
 
 // http://www.scalatest.org/user_guide/using_the_runner
 //   -o[configs...] - causes test results to be written to the standard output. The D configs shows all durations.
-testOptions in Test += Tests.Argument(TestFrameworks.ScalaTest, "-oD")
+Test / testOptions += Tests.Argument(TestFrameworks.ScalaTest, "-oD")
 
 // ======================================================================================================================
 // ==== Scaladoc ========================================================================================================
@@ -97,7 +97,7 @@ latestReleasedVersion := git.gitDescribedVersion.value.getOrElse("0.0.1-SNAPSHOT
 // link against the API documentation using autoAPIMappings.
 apiURL := Some(url(s"${homepage.value.get}/api/${latestReleasedVersion.value}/"))
 autoAPIMappings := true // Tell scaladoc to look for API documentation of managed dependencies in their metadata.
-scalacOptions in (Compile, doc) ++= Seq(
+Compile / doc / scalacOptions ++= Seq(
   "-author",      // Include authors.
   "-diagrams",    // Create inheritance diagrams for classes, traits and packages.
   "-groups",      // Group similar functions together (based on the @group annotation)
@@ -105,12 +105,12 @@ scalacOptions in (Compile, doc) ++= Seq(
   "-doc-title", name.value.capitalize,
   "-doc-version", latestReleasedVersion.value,
   "-doc-source-url", s"${homepage.value.get}/tree/v${latestReleasedVersion.value}€{FILE_PATH}.scala",
-  "-sourcepath", (baseDirectory in ThisBuild).value.getAbsolutePath,
+  "-sourcepath", baseDirectory.value.getAbsolutePath,
 )
 
 enablePlugins(GhpagesPlugin, SiteScaladocPlugin)
-siteSubdirName in SiteScaladoc := s"api/${version.value}"
-excludeFilter in ghpagesCleanSite := AllPassFilter // We want to keep all the previous API versions
+SiteScaladoc / siteSubdirName := s"api/${version.value}"
+ghpagesCleanSite / excludeFilter := AllPassFilter // We want to keep all the previous API versions
 val latestFileName = "latest"
 val createLatestSymlink = taskKey[Unit](s"Creates a symlink named $latestFileName which points to the latest version.")
 createLatestSymlink := {
@@ -122,7 +122,7 @@ createLatestSymlink := {
 ghpagesPushSite := ghpagesPushSite.dependsOn(createLatestSymlink).value
 ghpagesBranch := "gh-pages"
 ghpagesNoJekyll := false
-envVars in ghpagesPushSite := Map("SBT_GHPAGES_COMMIT_MESSAGE" -> s"Add Scaladocs for version ${latestReleasedVersion.value}")
+ghpagesPushSite / envVars := Map("SBT_GHPAGES_COMMIT_MESSAGE" -> s"Add Scaladocs for version ${latestReleasedVersion.value}")
 
 // ======================================================================================================================
 // ==== Publishing/Release ==============================================================================================
