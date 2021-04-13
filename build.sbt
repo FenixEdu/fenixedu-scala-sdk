@@ -36,7 +36,7 @@ Compile / console / scalacOptions ~= (_.filterNot { option =>
 })
 Test / console / scalacOptions := (Test / console / scalacOptions).value
 
-initialCommands in console :=
+console / initialCommands :=
   """import scala.concurrent.ExecutionContext
     |import java.util.concurrent.Executors
     |import cats.effect.{Blocker, ContextShift, IO}
@@ -54,13 +54,13 @@ initialCommands in console :=
 // ==== Dependencies ====================================================================================================
 // ======================================================================================================================
 libraryDependencies ++= Seq("blaze-client", "circe").map { module =>
-  "org.http4s"      %% s"http4s-$module" % "1.0.0-M19"
+  "org.http4s"      %% s"http4s-$module" % "1.0.0-M21"
 } ++ Seq(
   "io.circe"        %% "circe-derivation"  % "0.13.0-M5",
   "io.circe"        %% "circe-parser"      % "0.13.0",
   "com.beachape"    %% "enumeratum-circe"  % "1.6.1",
   "ch.qos.logback"  %  "logback-classic"   % "1.2.3" % Test,
-  "org.scalatest"   %% "scalatest"         % "3.2.6" % Test,
+  "org.scalatest"   %% "scalatest"         % "3.2.7" % Test,
 )
 addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.3.1")
 
