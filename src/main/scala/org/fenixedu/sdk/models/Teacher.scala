@@ -1,9 +1,10 @@
 package org.fenixedu.sdk.models
 
-import io.circe.Decoder
-import io.circe.derivation.deriveDecoder
+import io.circe.derivation.ConfiguredDecoder
 
-object Teacher {
-  implicit val decoder: Decoder[Teacher] = deriveDecoder(identity)
-}
-case class Teacher(name: String, istId: String, mails: List[String], urls: List[String])
+case class Teacher(
+  name: String,
+  istId: String,
+  mails: List[String],
+  urls: List[String],
+) derives ConfiguredDecoder

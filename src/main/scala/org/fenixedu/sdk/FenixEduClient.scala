@@ -1,13 +1,13 @@
 package org.fenixedu.sdk
 
 import cats.effect.Concurrent
-import org.fenixedu.sdk.models.{Course => _, _}
-import org.fenixedu.sdk.services._
+import org.fenixedu.sdk.models.{Course as _, *}
+import org.fenixedu.sdk.services.{*, given}
 import org.http4s.Uri
-import org.http4s.syntax.literals._
+import org.http4s.syntax.literals.*
 import org.http4s.client.Client
 
-class FenixEduClient[F[_]](val baseUri: Uri = uri"https://fenix.tecnico.ulisboa.pt/api/fenix")(implicit client: Client[F], F: Concurrent[F]) {
+class FenixEduClient[F[_]: Concurrent](val baseUri: Uri = uri"https://fenix.tecnico.ulisboa.pt/api/fenix")(using client: Client[F]):
 	val uri: Uri = baseUri / "v1"
 
 	/** @return returns some basic information about the institution where the application is deployed.
@@ -33,4 +33,3 @@ class FenixEduClient[F[_]](val baseUri: Uri = uri"https://fenix.tecnico.ulisboa.
 	def shuttle: F[Shuttle] = client.expect(uri / "shuttle")
 
 	val spaces = new Spaces[F](uri)
-}

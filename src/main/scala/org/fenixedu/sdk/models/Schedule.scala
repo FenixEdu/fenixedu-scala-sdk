@@ -1,32 +1,16 @@
 package org.fenixedu.sdk.models
 
-import io.circe.Decoder
-import io.circe.derivation.deriveDecoder
+import io.circe.derivation.ConfiguredDecoder
 
-object Schedule {
-  implicit val decoder: Decoder[Schedule] = deriveDecoder(identity)
-}
-case class Schedule(lessonPeriods: List[Period], courseLoads: List[CourseLoad], shifts: List[Shift])
+case class Schedule(lessonPeriods: List[Period], courseLoads: List[CourseLoad], shifts: List[Shift]) derives ConfiguredDecoder
 
-object CourseLoad {
-  implicit val decoder: Decoder[CourseLoad] = deriveDecoder(identity)
-}
-case class CourseLoad(`type`: String, totalQuantity: Float, unitQuantity: Float)
+case class CourseLoad(`type`: String, totalQuantity: Float, unitQuantity: Float) derives ConfiguredDecoder
 
-object Shift {
-  implicit val decoder: Decoder[Shift] = deriveDecoder(identity)
-}
-case class Shift(name: String, occupation: Occupation, types: List[String], lessons: List[Lesson], rooms: List[SpaceRef])
+case class Shift(name: String, occupation: Occupation, types: List[String], lessons: List[Lesson], rooms: List[SpaceRef]) derives ConfiguredDecoder
 
-object Occupation {
-  implicit val decoder: Decoder[Occupation] = deriveDecoder(identity)
-}
-case class Occupation(current: Int, max: Int)
+case class Occupation(current: Int, max: Int) derives ConfiguredDecoder
 
-object Lesson {
-  implicit val decoder: Decoder[Lesson] = deriveDecoder(identity)
-}
-case class Lesson(start: String, end: String, room: Option[SpaceRef])
+case class Lesson(start: String, end: String, room: Option[SpaceRef]) derives ConfiguredDecoder
 
 
 

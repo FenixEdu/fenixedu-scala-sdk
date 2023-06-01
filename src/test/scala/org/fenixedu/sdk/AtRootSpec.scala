@@ -3,19 +3,19 @@ package org.fenixedu.sdk
 import java.util.Locale
 import org.http4s.Uri
 
-class AtRootSpec extends Utils {
+class AtRootSpec extends Utils:
   "FenixEduClient" should {
     "retrieve about" in {
       client.about.idempotently { about =>
-        about.language shouldBe new Locale("pt", "PT")
+        assert(about.language == Locale("pt", "PT"))
         about.institutionUrl shouldBe Uri.unsafeFromString("https://tecnico.ulisboa.pt/")
       }
     }
 
     "retrieve academic terms" in {
       client.academicTerms.idempotently { terms =>
-        terms.keys should contain ("2020/2021")
-        terms("2020/2021") should have length 2
+        terms.keys should contain ("2023/2024")
+        terms("2023/2024") should have length 2
       }
     }
 
@@ -41,4 +41,4 @@ class AtRootSpec extends Utils {
       }
     }
   }
-}
+

@@ -1,11 +1,11 @@
 package org.fenixedu.sdk.services
 
 import cats.effect.Concurrent
-import org.fenixedu.sdk.models.{AttendingStudents, Evaluation, Group, Schedule, Course => CouseModel}
+import org.fenixedu.sdk.models.{AttendingStudents, Evaluation, Group, Schedule, Course as CouseModel}
 import org.http4s.Uri
 import org.http4s.client.Client
 
-final class Course[F[_]: Concurrent](val id: String, baseUri: Uri)(implicit client: Client[F]) {
+final class Course[F[_]: Concurrent](val id: String, baseUri: Uri)(using client: Client[F]):
   val uri: Uri = baseUri / "courses" / id
 
   /** A course is a concrete unit of teaching that typically lasts one academic term.
@@ -31,4 +31,3 @@ final class Course[F[_]: Concurrent](val id: String, baseUri: Uri)(implicit clie
   /** This endpoint lists all the students attending the specified course. For each student it indicates the corresponding degree.
     * The endpoint also returns the number of students officially enrolled in the course. */
   val students: F[AttendingStudents] = client.expect(uri / "students")
-}

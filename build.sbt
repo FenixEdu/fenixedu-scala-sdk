@@ -5,36 +5,26 @@ name := "fenixedu-scala-sdk"
 // ==== Compile Options =================================================================================================
 // ======================================================================================================================
 javacOptions ++= Seq("-Xlint", "-encoding", "UTF-8", "-Dfile.encoding=utf-8")
-scalaVersion := "2.13.5"
+scalaVersion := "3.3.0"
 
 scalacOptions ++= Seq(
-  "-encoding", "utf-8",            // Specify character encoding used by source files.
-  "-explaintypes",                 // Explain type errors in more detail.
-  "-feature",                      // Emit warning and location for usages of features that should be imported explicitly.
-  "-Ybackend-parallelism", "8",    // Maximum worker threads for backend.
-  "-Ybackend-worker-queue", "10",  // Backend threads worker queue size.
-  "-Ymacro-annotations",           // Enable support for macro annotations, formerly in macro paradise.
-  "-Xcheckinit",                   // Wrap field accessors to throw an exception on uninitialized access.
-  "-Xsource:3",                    // Treat compiler input as Scala source for the specified version.
-  "-Xmigration:3",                 // Warn about constructs whose behavior may have changed since version.
-  "-Werror",                       // Fail the compilation if there are any warnings.
-  "-Xlint:_",                      // Enables every warning. scalac -Xlint:help for a list and explanation
-  "-deprecation",                  // Emit warning and location for usages of deprecated APIs.
-  "-unchecked",                    // Enable additional warnings where generated code depends on assumptions.
-  "-Wdead-code",                   // Warn when dead code is identified.
-  "-Wextra-implicit",              // Warn when more than one implicit parameter section is defined.
-  "-Wnumeric-widen",               // Warn when numerics are widened.
-  //"-Woctal-literal",               // Warn on obsolete octal syntax.
-  "-Wvalue-discard",               // Warn when non-Unit expression results are unused.
-  "-Wunused:_",                    // Enables every warning of unused members/definitions/etc
+  //"-explain",                      // Explain errors in more detail.
+  //"-explain-types",                // Explain type errors in more detail.
+  "-new-syntax",                    // Require `then` and `do` in control expressions.
+  "-indent",                        // Allow significant indentation.
+  "-feature",                       // Emit warning and location for usages of features that should be imported explicitly.
+  "-language:future",               // better-monadic-for
+  "-language:implicitConversions",  // Allow implicit conversions
+  "-deprecation",                   // Emit warning and location for usages of deprecated APIs.
+  "-Wunused:all",                   // Enable or disable specific `unused` warnings
+  "-Werror",                        // Fail the compilation if there are any warnings.
+  "-Wvalue-discard",
+  "-source:future",
 )
 
-// These lines ensure that in sbt console or sbt test:console the -Ywarn* and the -Xfatal-warning are not bothersome.
-// https://stackoverflow.com/questions/26940253/in-sbt-how-do-you-override-scalacoptions-for-console-in-all-configurations
-Compile / console / scalacOptions ~= (_.filterNot { option =>
-  option.startsWith("-W") || option.startsWith("-Xlint")
-})
-Test / console / scalacOptions := (Test / console / scalacOptions).value
+// These lines ensure that in sbt console or sbt test:console the -Werror is not bothersome.
+Compile / console / scalacOptions ~= (_.filterNot(_.startsWith("-Werror")))
+Test / console / scalacOptions := (Compile / console / scalacOptions).value
 
 console / initialCommands :=
   """import scala.concurrent.ExecutionContext
@@ -54,15 +44,12 @@ console / initialCommands :=
 // ==== Dependencies ====================================================================================================
 // ======================================================================================================================
 libraryDependencies ++= Seq("blaze-client", "circe").map { module =>
-  "org.http4s"      %% s"http4s-$module" % "1.0.0-M21"
+  "org.http4s"      %% s"http4s-$module" % "1.0.0-M38"
 } ++ Seq(
-  "io.circe"        %% "circe-derivation"  % "0.13.0-M5",
-  "io.circe"        %% "circe-parser"      % "0.13.0",
-  "com.beachape"    %% "enumeratum-circe"  % "1.6.1",
-  "ch.qos.logback"  %  "logback-classic"   % "1.2.3" % Test,
-  "org.scalatest"   %% "scalatest"         % "3.2.7" % Test,
+  "io.circe"        %% "circe-parser"      % "0.14.5",
+  "ch.qos.logback"  %  "logback-classic"   % "1.4.7" % Test,
+  "org.scalatest"   %% "scalatest"         % "3.2.16" % Test,
 )
-addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.3.1")
 
 // ======================================================================================================================
 // ==== Testing =========================================================================================================
@@ -89,7 +76,6 @@ Test / testOptions += Tests.Argument(TestFrameworks.ScalaTest, "-oD")
 // ==== Scaladoc ========================================================================================================
 // ======================================================================================================================
 git.remoteRepo := s"git@github.com:FenixEdu/${name.value}.git"
-git.useGitDescribe := true // Get version by calling `git describe` on the repository
 val latestReleasedVersion = SettingKey[String]("latest released version")
 latestReleasedVersion := git.gitDescribedVersion.value.getOrElse("0.0.1-SNAPSHOT")
 
@@ -146,7 +132,7 @@ releaseNextCommitMessage := s"Setting version to ${ReleasePlugin.runtimeVersion.
 releasePublishArtifactsAction := PgpKeys.publishSigned.value // Maven Central requires packages to be signed
 import ReleaseTransformations._
 releaseProcess := Seq[ReleaseStep](
-  releaseStepTask(dependencyUpdates),
+  // releaseStepTask(dependencyUpdates), // http4s-circe prevents this
   checkSnapshotDependencies,
   inquireVersions,
   runClean,

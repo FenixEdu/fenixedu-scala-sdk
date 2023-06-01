@@ -1,13 +1,13 @@
 package org.fenixedu.sdk
 
 import cats.effect.IO
-import cats.instances.list._
-import cats.syntax.traverse._
+import cats.instances.list.*
+import cats.syntax.traverse.*
 import org.fenixedu.sdk.models.{Building, Campus, Floor, Room, Space}
 import org.scalatest.Succeeded
 import org.scalatest.exceptions.TestFailedException
 
-class SpacesSpec extends Utils {
+class SpacesSpec extends Utils:
   val campiAsSpaces: IO[List[Space]] = client.spaces.list().flatMap(_.traverse(campus => client.spaces.get(campus.id)))
   val campi: IO[List[Campus]] = campiAsSpaces.map(_.collect{ case c: Campus => c })
 
@@ -39,7 +39,6 @@ class SpacesSpec extends Utils {
             case _: Campus => throw new TestFailedException("A campus cannot contain campus", 2)
           }
         }
-      } map (_ should contain only Succeeded) // Scalatest flatten :P
+      }.map(_ should contain only Succeeded) // Scalatest flatten :P
     }
   }
-}

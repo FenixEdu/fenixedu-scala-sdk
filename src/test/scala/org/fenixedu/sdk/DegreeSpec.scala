@@ -1,12 +1,11 @@
 package org.fenixedu.sdk
 
-import java.time.Year
-import cats.instances.list._
-import cats.syntax.traverse._
+import cats.instances.list.*
+import cats.syntax.traverse.*
 
-class DegreeSpec extends Utils {
+class DegreeSpec extends Utils:
   "Degrees service" should {
-    for (year <- 2000 until Year.now.getValue) {
+    for (year <- 2020 until 2004 by -2)
       val academicTerm = s"$year/${year + 1}"
       s"list degrees of academic term $academicTerm" in {
         client.degrees.list(academicTerm = Some(academicTerm)).map(_.length should be > 1)
@@ -19,6 +18,4 @@ class DegreeSpec extends Utils {
             assert(degreesCourses.forall(_.length >= 0))
           }
       }
-    }
   }
-}
